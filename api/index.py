@@ -71,7 +71,7 @@ def login():
     cursor = conn.cursor()
 
     # If username is not found in the database
-    cursor.execute(f"SELECT * FROM user WHERE email = {email}")
+    cursor.execute("SELECT * FROM user WHERE email = %s", (email,))
     results = cursor.fetchall()
     cursor.close()
 
