@@ -20,8 +20,8 @@ def signup():
     data = request.get_json()
     email = data.get('email')
     password = data.get('password')
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
     
     if email == None or password == None or first_name == None or last_name == None:
         return make_response(jsonify({"message": "One or more attributes are missing", "error": "Bad Request"}, 600))
