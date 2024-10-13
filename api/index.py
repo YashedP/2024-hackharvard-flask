@@ -8,12 +8,12 @@ import pymysql
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
-RDS_HOST = os.environ('RDS_HOST')
-RDS_PORT = os.environ('RDS_PORT')
-RDS_USER = os.environ('RDS_USER')
-RDS_PASSWORD = os.environ('RDS_PASSWORD')
-RDS_DB = os.environ('RDS_DB')
-SECRET_KEY = os.environ('SECRET_KEY')
+RDS_HOST = os.environ['RDS_HOST']
+RDS_PORT = os.environ['RDS_PORT']
+RDS_USER = os.environ['RDS_USER']
+RDS_PASSWORD = os.environ['RDS_PASSWORD']
+RDS_DB = os.environ['RDS_DB']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
