@@ -22,12 +22,8 @@ def signup():
     password = data.get('password')
     first_name = data.get('first_name')
     last_name = data.get('last_name')
-    year = int(data.get('year'))
-    month = int(data.get('month'))
-    day = int(data.get('day'))
-    date_of_birth = datetime.date(year, month, day)
     
-    if email == None or password == None or first_name == None or last_name == None or date_of_birth == None:
+    if email == None or password == None or first_name == None or last_name == None:
         return make_response(jsonify({"message": "One or more attributes are missing", "error": "Bad Request"}, 600))
     
     conn = open_db()
@@ -45,9 +41,9 @@ def signup():
     equipments = []
 
     cursor.execute(
-        "INSERT INTO user (first_name, last_name, date_of_birth, email, password, certifications, equipments) "
-        "VALUES (%s, %s, %s, %s, %s, %s, %s)",
-        (first_name, last_name, date_of_birth, email, password, json.dumps(certifications), json.dumps(equipments))
+        "INSERT INTO user (first_name, last_name, email, password, certifications, equipments) "
+        "VALUES (%s, %s, %s, %s, %s, %s)",
+        (first_name, last_name, email, password, json.dumps(certifications), json.dumps(equipments))
     )
 
     conn.commit()
