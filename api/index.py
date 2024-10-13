@@ -87,7 +87,7 @@ def login():
     user = results[0]
         
     # If password is wrong in the database
-    if user[6] != password:
+    if user[5] != password:
         close_db(conn)
         return make_response(jsonify({"message": "Password is incorrect", "error": "Bad Request"}, 603))
 
