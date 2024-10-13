@@ -41,7 +41,11 @@ def signup():
         close_db(conn)
         return(jsonify({"message": "Email already exists", "error": "Bad Request"}, 601))
 
-    cursor.execute(f"INSERT INTO user (first_name, last_name, date_of_birth, email, password, certifications, equipments) VALUES ({first_name}, {last_name}, {date_of_birth}, {email}, {password}, {[]}, {[]})")
+    cursor.execute(
+        "INSERT INTO user (first_name, last_name, date_of_birth, email, password, certifications, equipments) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+        (first_name, last_name, date_of_birth, email, password, [], [])
+    )
     cursor.execute(f"SELECT LAST_INSERT_ID()")
     id = cursor.fetchall()[0][0]
 
