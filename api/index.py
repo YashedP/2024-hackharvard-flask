@@ -49,15 +49,14 @@ def signup():
         "VALUES (%s, %s, %s, %s, %s, %s, %s)",
         (first_name, last_name, date_of_birth, email, password, json.dumps(certifications), json.dumps(equipments))
     )
-    cursor.execute(f"SELECT LAST_INSERT_ID()")
-    id = cursor.fetchall()[0][0]
 
     conn.commit()
-    cursor.close()
-    close_db(conn)
     # get the last user added
     cursor.execute(f"SELECT LAST_INSERT_ID()")
     user = cursor.fetchall()[0]
+
+    cursor.close()
+    close_db(conn)
 
     token = jwt.encode({
         "user": user,
