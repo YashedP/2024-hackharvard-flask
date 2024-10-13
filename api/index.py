@@ -33,7 +33,7 @@ def signup():
     conn = open_db()
 
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM user WHERE email = {email}")
+    cursor.execute("SELECT * FROM user WHERE email = %s", (email,))
     results = cursor.fetchall()
 
     if (len(results) > 0):
