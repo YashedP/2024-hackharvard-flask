@@ -55,11 +55,14 @@ def signup():
     conn.commit()
     cursor.close()
     close_db(conn)
+    # get the last user added
+    cursor.execute(f"SELECT LAST_INSERT_ID()")
+    user = cursor.fetchall()[0]
 
     token = jwt.encode({
-        'id': id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-    })
+        "user": user,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    }, SECRET_KEY, algorithm='HS256')
 
     return(jsonify({"Message": "Logged in", "id": id, "token": token}, 200))
 
@@ -96,9 +99,9 @@ def login():
     close_db(conn)
 
     token = jwt.encode({
-        'id': person[0],
+        "user": person,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-    })
+    }, SECRET_KEY, algorithm='HS256')
 
     # Success Code, return everything about the user
     return(jsonify({"Message": "Logged in", "user": person, "token": token}, 200))
