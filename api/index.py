@@ -98,7 +98,7 @@ def login():
     }, SECRET_KEY, algorithm='HS256')
 
     # Success Code, return everything about the user
-    return make_response(jsonify({"message": "GAYYYLogged in", "user": user, "token": token}), 200)
+    return make_response(jsonify({"message": "Logged in", "user": user, "token": token}), 200)
 
 @app.route('/api/add-certification', methods=['POST'])
 def add_certification():
