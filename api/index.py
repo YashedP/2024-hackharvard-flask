@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import json
 import jwt
@@ -28,7 +28,7 @@ def signup():
     date_of_birth = datetime.date(year, month, day)
     
     if email == None or password == None or first_name == None or last_name == None or date_of_birth == None:
-        return(jsonify({"message": "One or more attributes are missing", "error": "Bad Request"}, 600))
+        return make_response(jsonify({"message": "One or more attributes are missing", "error": "Bad Request"}, 600))
     
     conn = open_db()
 
@@ -39,7 +39,7 @@ def signup():
     if (len(results) > 0):
         cursor.close()
         close_db(conn)
-        return(jsonify({"message": "Email already exists", "error": "Bad Request"}, 601))
+        return make_response(jsonify({"message": "Email already exists", "error": "Bad Request"}), 400)
 
     certifications = []
     equipments = []
@@ -63,7 +63,7 @@ def signup():
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
     }, SECRET_KEY, algorithm='HS256')
 
-    return(jsonify({"Message": "Logged in", "id": id, "token": token}, 200))
+    return make_response(jsonify({"message": "Logged in", "user": user, "token": token}), 200)
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -75,7 +75,7 @@ def login():
 
     if email == None or password == None:
         close_db(conn)
-        return(jsonify({"message": "Missing email or password", "error": "Bad Request"}, 600))
+        return make_response(jsonify({"message": "Missing email or password", "error": "Bad Request"}, 600))
 
     cursor = conn.cursor()
 
@@ -86,28 +86,27 @@ def login():
 
     if (len(results) == 0):
         close_db(conn)
-        return(jsonify({"message": "Email not found", "error": "Bad Request"}, 602))
+        return make_response(jsonify({"message": "Email not found", "error": "Bad Request"}, 602))
 
-    person = results[0]
+    user = results[0]
         
     # If password is wrong in the database
-    if person[6] != password:
+    if user[6] != password:
         close_db(conn)
-        return(jsonify({"message": "Password is incorrect", "error": "Bad Request"}, 603))
+        return make_response(jsonify({"message": "Password is incorrect", "error": "Bad Request"}, 603))
 
     close_db(conn)
 
     token = jwt.encode({
-        "user": person,
+        "user": user,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
     }, SECRET_KEY, algorithm='HS256')
 
     # Success Code, return everything about the user
-    return(jsonify({"Message": "Logged in", "user": person, "token": token}, 200))
+    return make_response(jsonify({"message": "Logged in", "user": user, "token": token}), 200)
 
 @app.route('/api/protected', methods=['GET'])
 def protected():
-    
     pass
 
 @app.route('/api/add-certification', methods=['POST'])
@@ -117,7 +116,7 @@ def add_certification():
     certification = data.get('certification')
     
     if id == None or certification == None:
-        return(jsonify({"message": "Missing id or certifications", "error": "Bad Request"}, 600))
+        return make_response(jsonify({"message": "Missing id or certification", "error": "Bad Request"}, 600))
 
     conn = open_db()
     cursor = conn.cursor()
@@ -141,7 +140,7 @@ def add_equipment():
     equipment = data.get('equipment')
     
     if id == None or equipment == None:
-        return(jsonify({"message": "Missing id or equipment", "error": "Bad Request"}, 600))
+        return make_response(jsonify({"message": "Missing id or equipment", "error": "Bad Request"}, 600))
 
     conn = open_db()
     cursor = conn.cursor()
@@ -167,17 +166,17 @@ def token_required(f):
             token = request.headers['Authorization'].split(" ")[1]  # Get the token from "Bearer <token>"
 
         if not token:
-            return jsonify({'message': 'Token is missing!'}), 403  # Forbidden if no token
+            return make_response(jsonify({"message": "Token is missing", "error": "Forbidden"}, 403))
 
         try:
             # Decode the token to get the user data
             data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
             current_user = data['user_id']  # Extract user ID or other information from token
         except jwt.ExpiredSignatureError:
-            return jsonify({'message': 'Token has expired!'}), 401  # Unauthorized if expired
+            return make_response(jsonify({"message": "Token has expired", "error": "Unauthorized"}, 401))
         except jwt.InvalidTokenError:
-            return jsonify({'message': 'Invalid token!'}), 401  # Unauthorized if invalid
-
+            return make_response(jsonify({"message": "Invalid token", "error": "Unauthorized"}, 401))
+        
         return f(current_user, *args, **kwargs)  # Call the wrapped function with user data
 
     return decorator
