@@ -89,7 +89,7 @@ def login():
     # If password is wrong in the database
     if user[5] != password:
         close_db(conn)
-        return make_response(jsonify({"message": "Password is incorrect", "error": "Bad Request", "user5": user[5], "pass": password}, 603))
+        return make_response(jsonify({"message": "Password is incorrect", "error": "Bad Request"}, 603))
     close_db(conn)
 
     token = jwt.encode({
@@ -98,7 +98,7 @@ def login():
     }, SECRET_KEY, algorithm='HS256')
 
     # Success Code, return everything about the user
-    return make_response(jsonify({"message": "Logged in", "user": user, "token": token}), 200)
+    return make_response(jsonify({"message": "GAYYYLogged in", "user": user, "token": token}), 200)
 
 @app.route('/api/add-certification', methods=['POST'])
 def add_certification():
