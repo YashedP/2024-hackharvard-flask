@@ -33,7 +33,7 @@ def signup():
     conn = open_db()
 
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM users WHERE email = {email}")
+    cursor.execute(f"SELECT * FROM user WHERE email = {email}")
     results = cursor.fetchall()
 
     if (len(results) > 0):
@@ -41,7 +41,7 @@ def signup():
         close_db(conn)
         return(jsonify({"message": "Email already exists", "error": "Bad Request"}, 601))
 
-    cursor.execute(f"INSERT INTO users (first_name, last_name, date_of_birth, email, password, certifications, equipments) VALUES ({first_name}, {last_name}, {date_of_birth}, {email}, {password}, {[]}, {[]})")
+    cursor.execute(f"INSERT INTO user (first_name, last_name, date_of_birth, email, password, certifications, equipments) VALUES ({first_name}, {last_name}, {date_of_birth}, {email}, {password}, {[]}, {[]})")
     cursor.execute(f"SELECT LAST_INSERT_ID()")
     id = cursor.fetchall()[0][0]
 
@@ -71,7 +71,7 @@ def login():
     cursor = conn.cursor()
 
     # If username is not found in the database
-    cursor.execute(f"SELECT * FROM users WHERE email = {email}")
+    cursor.execute(f"SELECT * FROM user WHERE email = {email}")
     results = cursor.fetchall()
     cursor.close()
 
@@ -112,13 +112,13 @@ def add_certification():
 
     conn = open_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT certifications FROM users WHERE id = {id}")
+    cursor.execute(f"SELECT certifications FROM user WHERE id = {id}")
     
     results = cursor.fetchall()
     certifications = results[0][0]
     certifications.append(certification)
     
-    cursor.execute(f"UPDATE users SET certifications = {certifications} WHERE id = {id}")
+    cursor.execute(f"UPDATE user SET certifications = {certifications} WHERE id = {id}")
     conn.commit()
     
     cursor.close()
@@ -136,13 +136,13 @@ def add_equipment():
 
     conn = open_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT equipment FROM users WHERE id = {id}")
+    cursor.execute(f"SELECT equipment FROM user WHERE id = {id}")
     
     results = cursor.fetchall()
     equipment = results[0][0]
     equipment.append(equipment)
     
-    cursor.execute(f"UPDATE users SET equipment = {equipment} WHERE id = {id}")
+    cursor.execute(f"UPDATE user SET equipment = {equipment} WHERE id = {id}")
     conn.commit()
     
     cursor.close()
