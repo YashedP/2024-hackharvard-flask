@@ -9,7 +9,7 @@ import pymysql
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 RDS_HOST = os.environ['RDS_HOST']
-RDS_PORT = os.environ['RDS_PORT']
+RDS_PORT = int(os.environ['RDS_PORT'])
 RDS_USER = os.environ['RDS_USER']
 RDS_PASSWORD = os.environ['RDS_PASSWORD']
 RDS_DB = os.environ['RDS_DB']
@@ -22,9 +22,9 @@ def signup():
     password = data.get('password')
     first_name = data.get('first_name')
     last_name = data.get('last_name')
-    year = data.get('year')
-    month = data.get('month')
-    day = data.get('day')
+    year = int(data.get('year'))
+    month = int(data.get('month'))
+    day = int(data.get('day'))
     date_of_birth = datetime.date(year, month, day)
     
     if email == None or password == None or first_name == None or last_name == None or date_of_birth == None:
