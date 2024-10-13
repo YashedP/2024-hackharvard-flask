@@ -7,7 +7,7 @@ import os
 import pymysql
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 RDS_HOST = os.environ('RDS_HOST')
 RDS_PORT = os.environ('RDS_PORT')
 RDS_USER = os.environ('RDS_USER')
