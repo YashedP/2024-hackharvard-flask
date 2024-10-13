@@ -116,13 +116,13 @@ def add_certification():
 
     conn = open_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT certifications FROM user WHERE id = {id}")
+    cursor.execute("SELECT certifications FROM user WHERE id = %s", (id,))
     
     results = cursor.fetchall()
     certifications = results[0][0]
     certifications.append(certification)
     
-    cursor.execute(f"UPDATE user SET certifications = {certifications} WHERE id = {id}")
+    cursor.execute("UPDATE user SET certifications = %s WHERE id = %s", (certifications, id))
     conn.commit()
     
     cursor.close()
@@ -140,13 +140,13 @@ def add_equipment():
 
     conn = open_db()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT equipment FROM user WHERE id = {id}")
+    cursor.execute("SELECT equipment FROM user WHERE id = %s", (id,))
     
     results = cursor.fetchall()
     equipment = results[0][0]
     equipment.append(equipment)
     
-    cursor.execute(f"UPDATE user SET equipment = {equipment} WHERE id = {id}")
+    cursor.execute("UPDATE user SET equipment = %s WHERE id = %s", (equipment, id))
     conn.commit()
     
     cursor.close()
