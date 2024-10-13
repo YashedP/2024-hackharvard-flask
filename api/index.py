@@ -105,10 +105,6 @@ def login():
     # Success Code, return everything about the user
     return make_response(jsonify({"message": "Logged in", "user": user, "token": token}), 200)
 
-@app.route('/api/protected', methods=['GET'])
-def protected():
-    pass
-
 @app.route('/api/add-certification', methods=['POST'])
 def add_certification():
     data = request.get_json()
@@ -166,21 +162,24 @@ def token_required(f):
             token = request.headers['Authorization'].split(" ")[1]  # Get the token from "Bearer <token>"
 
         if not token:
-            return make_response(jsonify({"message": "Token is missing", "error": "Forbidden"}, 403))
+            return make_response(jsonify({"message": "Token is missing", "error": "Forbidden"}), 403)
 
         try:
             # Decode the token to get the user data
             data = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
             current_user = data['user_id']  # Extract user ID or other information from token
         except jwt.ExpiredSignatureError:
-            return make_response(jsonify({"message": "Token has expired", "error": "Unauthorized"}, 401))
+            return make_response(jsonify({"message": "Token has expired", "error": "Unauthorized"}), 401)
         except jwt.InvalidTokenError:
-            return make_response(jsonify({"message": "Invalid token", "error": "Unauthorized"}, 401))
+            return make_response(jsonify({"message": "Invalid token", "error": "Unauthorized"}), 401)
         
         return f(current_user, *args, **kwargs)  # Call the wrapped function with user data
 
     return decorator
 
+@app.route('/api/protected', methods=['GET'])
+def protected(current_user):
+    return jsonify({"message": f"Welcome, user {current_user}!", "status": "Access granted"})
 
 if __name__ == '__main__':
     app.run(debug=True)
