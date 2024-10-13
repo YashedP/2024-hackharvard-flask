@@ -101,7 +101,7 @@ def protected():
     
     pass
 
-@app.route('api/add-certification', methods=['POST'])
+@app.route('/api/add-certification', methods=['POST'])
 def add_certification():
     data = request.get_json()
     id = data.get('id')
@@ -125,7 +125,7 @@ def add_certification():
     close_db(conn)
     return(jsonify({"message": "Certification added"}, 200))
 
-@app.route('api/add-equipment', methods=['POST'])
+@app.route('/api/add-equipment', methods=['POST'])
 def add_equipment():
     data = request.get_json()
     id = data.get('id')
